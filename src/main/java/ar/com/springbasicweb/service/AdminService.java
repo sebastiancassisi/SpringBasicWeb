@@ -19,15 +19,15 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AdminService {
-    
+
     @Autowired
     private AdminDao adminDao;
-    
-    public boolean save(Admin admin){
-    
-    admin.setFechaCreacion(new Timestamp(new Date().getTime()));
-        
-    return adminDao.save(admin);
+
+    public boolean save(Admin admin) {
+
+        admin.setFechaCreacion(new Timestamp(new Date().getTime()));
+
+        return adminDao.save(admin);
     }
 
     public List<Admin> findAll() {
@@ -35,9 +35,24 @@ public class AdminService {
     }
 
     public Admin findById(int id) {
-       return adminDao.findById(id);
+        return adminDao.findById(id);
     }
 
- 
-    
+    public boolean saveOrUpdate(Admin admin) {
+
+        if (admin.getIdAd() == 0) {
+            //Insert
+            admin.setFechaCreacion(new Timestamp(new Date().getTime()));
+            return adminDao.save(admin);
+        } else {
+            //Update
+            return adminDao.update(admin);
+        }
+
+    }
+
+    public boolean delete(int idAd) {
+       return adminDao.delete(idAd);
+    }
+
 }

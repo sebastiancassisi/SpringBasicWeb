@@ -16,4 +16,5 @@
     
     <context:component-scan base-package="ar.com.springbasicweb.controller"></context:component-scan>
     <mvc:annotation-driven></mvc:annotation-driven>
+    <mvc:resources mapping="res/**" location="resources/"></mvc:resources>
 </beans>

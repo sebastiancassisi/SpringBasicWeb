@@ -38,7 +38,7 @@ public class AdminController {
     @RequestMapping(value = "/admin/save", method = RequestMethod.POST)
     public String handleAmin(@ModelAttribute("admin") Admin adminForm, Model model, RedirectAttributes ra) {
 
-        if (adminService.save(adminForm)) {
+        if (adminService.saveOrUpdate(adminForm)) {
             ra.addFlashAttribute("resultado", "Cambios realizados con exito");
         } else {
             ra.addFlashAttribute("resultado", "Error al realizar los cambios");
@@ -54,4 +54,18 @@ public class AdminController {
     return "admin";
     }
 
+    	@RequestMapping("/admin/{idAd}/delete")
+	public String delete(@PathVariable("idAd") int idAd,
+			RedirectAttributes ra) {
+		
+		if (adminService.delete(idAd)) {
+			ra.addFlashAttribute("resultado", "Cambios realizados con éxito");
+		} 
+		else {
+			ra.addFlashAttribute("resultado", "Error al aplicar cambios");
+		}
+		return "redirect:/admin";
+	}
+    
+    
 }
