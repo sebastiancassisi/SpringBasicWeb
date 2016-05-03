@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,8 +13,9 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <c:import url="/WEB-INF/views/menu.jsp"></c:import>
         <h1>About.jsp</h1>
-         <h4>Mensaje: <c:out value="${mensaje}"></c:out></h4>
-         <h4>Resultado: <c:out value="${resultado}"></c:out></h4>
+         Atributos del Model: <c:out value="${mensaje}" /> <br/>
+	Atributos en Session <c:out value="${sessionScope.resultado}"/>
     </body>
 </html>

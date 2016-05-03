@@ -5,18 +5,36 @@
  */
 package ar.com.springbasicweb.beans;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  *
  * @author cassisi
  */
-public class Admin {
+@Entity
+@Table(name = "admin")
+public class Admin implements Serializable {
 
+    @Id
+    @GeneratedValue
     private int idAd;
+    @Column(name = "nombre")
     private String nombre;
+    @Column(name = "cargo")
     private String cargo;
+    @Column(name = "fechaCreacion")
     private Timestamp fechaCreacion;
+
+    @OneToMany(mappedBy = "admin")
+    private Set<Direccion> direcciones;
 
     public int getIdAd() {
         return idAd;
@@ -50,6 +68,14 @@ public class Admin {
         this.fechaCreacion = fechaCreacion;
     }
 
+    public Set<Direccion> getDirecciones() {
+        return direcciones;
+    }
+
+    public void setDirecciones(Set<Direccion> direcciones) {
+        this.direcciones = direcciones;
+    }
+
     public Admin() {
     }
 
@@ -58,16 +84,10 @@ public class Admin {
         this.cargo = cargo;
         this.fechaCreacion = fechaCreacion;
     }
-    
-    
+
     @Override
     public String toString() {
         return "Administrador{" + "idAd=" + idAd + ", nombre=" + nombre + ", cargo=" + cargo + ", fechaCreacion=" + fechaCreacion + '}';
     }
-    
-    
-    
-   
-   
 
 }

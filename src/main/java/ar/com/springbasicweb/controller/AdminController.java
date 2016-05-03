@@ -25,47 +25,39 @@ public class AdminController {
 
     @RequestMapping("/admin")
     public String showAdmin(Model model, @ModelAttribute("resultado") String resultado) {
-        
+
         List<Admin> admins = adminService.findAll();
-        
+
         Admin admin = new Admin();
         model.addAttribute("admin", admin);
         model.addAttribute("resultado", resultado);
-        model.addAttribute("admins",admins);
+        model.addAttribute("admins", admins);
         return "admin";
     }
 
     @RequestMapping(value = "/admin/save", method = RequestMethod.POST)
     public String handleAmin(@ModelAttribute("admin") Admin adminForm, Model model, RedirectAttributes ra) {
 
-        if (adminService.saveOrUpdate(adminForm)) {
-            ra.addFlashAttribute("resultado", "Cambios realizados con exito");
-        } else {
-            ra.addFlashAttribute("resultado", "Error al realizar los cambios");
-        }
+        adminService.saveOrUpdate(adminForm);
+        ra.addFlashAttribute("resultado", "Cambios realizados con exito");
+
         return "redirect:/admin";
     }
-    
+
     @RequestMapping("/admin/{idAd}/update")
-    public String showUpdate(Model model,@PathVariable("idAd") int id){
+    public String showUpdate(Model model, @PathVariable("idAd") int id) {
         Admin admin = adminService.findById(id);
-        model.addAttribute("admin",admin);
-    
-    return "admin";
+        model.addAttribute("admin", admin);
+        return "admin";
     }
 
-    	@RequestMapping("/admin/{idAd}/delete")
-	public String delete(@PathVariable("idAd") int idAd,
-			RedirectAttributes ra) {
-		
-		if (adminService.delete(idAd)) {
-			ra.addFlashAttribute("resultado", "Cambios realizados con éxito");
-		} 
-		else {
-			ra.addFlashAttribute("resultado", "Error al aplicar cambios");
-		}
-		return "redirect:/admin";
-	}
-    
-    
+    @RequestMapping("/admin/{idAd}/delete")
+    public String delete(@PathVariable("idAd") int idAd,
+            RedirectAttributes ra) {
+
+        adminService.delete(idAd);
+        ra.addFlashAttribute("resultado", "Cambios realizados con exito");
+        return "redirect:/admin";
+    }
+
 }

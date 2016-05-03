@@ -1,88 +1,63 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ar.com.springbasicweb.daos;
 
 import ar.com.springbasicweb.beans.Admin;
-import ar.com.springbasicweb.beans.AdminRowMapper;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
-import javax.sql.DataSource;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- *
- * @author cassisi
- */
-@Component("adminDao")
+@Transactional //Todos los metodos del dao deben ser transaccionales
+@Repository //Le indico a Spring que esta clase se trata de un dao
 public class AdminDaoImpl implements AdminDao {
+    
+    @Autowired //Le indico a Srpring que haga la inyección dependencias
+    private SessionFactory sessionFactory;
 
-    //Plantilla que acepta comodines
-    private NamedParameterJdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private void setDataSource(DataSource dataSource) {
-        this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+    //Creo el metodo getSession para que me devuelva la sesion actial de hibernate.
+    public Session getSession() {
+        return sessionFactory.getCurrentSession();
     }
-
+    
     @Override
-    public boolean save(Admin admin) {
-//        MapSqlParameterSource paramMap = new MapSqlParameterSource();
-//        paramMap.addValue("nombre", admin.getNombre());
-//        paramMap.addValue("cargo", admin.getCargo());
-//        paramMap.addValue("fechaCreacion", admin.getFechaCreacion());
+    public void save(Admin admin) {
+        getSession().save(admin);
+    }
+    
+    @Override
+    public List<Admin> findAll() {        
+        Query query = getSession().createQuery("from Admin");//Utilizo HQL. Admin es el nombre de la clases mapeada, la tabla es admin.
+        return query.list();
         
-        BeanPropertySqlParameterSource paramMap = new BeanPropertySqlParameterSource(admin);
-
-        return jdbcTemplate.update("insert into springbd.admin (nombre, cargo, fechaCreacion) values (:nombre, :cargo, :fechaCreacion) ", paramMap) == 1;
     }
-
-    @Override
-    public List<Admin> findAll() {
-        return jdbcTemplate.query("select * from admin",new AdminRowMapper() {
-        });
-    }
-
+    
     @Override
     public Admin findById(int id) {
-        return  jdbcTemplate.queryForObject("Select * from admin where idAd=:idAd",
-                new MapSqlParameterSource("idAd",id) , new AdminRowMapper());
+        Criteria crit = getSession().createCriteria(Admin.class);
+        crit.add(Restrictions.eq("idAd", id));
+        return (Admin) crit.uniqueResult();
     }
-
+    
     @Override
     public List<Admin> findByNombre(String nombre) {
-        return  jdbcTemplate.query("Select * from admin where nombre like :nombre",
-                new MapSqlParameterSource("nombre","%"+nombre+"%") , new AdminRowMapper());
+        Criteria crit = getSession().createCriteria(Admin.class);
+        crit.add(Restrictions.like("nombre", "%" + nombre + "%"));
+        return crit.list();
     }
-
+    
     @Override
-    public boolean update(Admin admin) {
-       return jdbcTemplate.update("update springbd.admin set nombre=:nombre, cargo=:cargo, fechaCreacion=:fechaCreacion where idAd=:idAd",
-               new BeanPropertySqlParameterSource(admin))==1;
+    public void update(Admin admin) {
+        getSession().update(admin);
     }
-
+    
     @Override
-    public boolean delete(int idAd) {
-        return jdbcTemplate.update("delete from springbd.admin where idAd=:idAd",
-                new MapSqlParameterSource("idAd",idAd)) ==1;
+    public void delete(Admin admin) {
+        getSession().delete(admin);
+        
     }
-
-    @Transactional
-    @Override
-    public int[] saveAll(List<Admin> admins) {
-        SqlParameterSource[] batchArgs = SqlParameterSourceUtils.createBatch(admins.toArray());
-        return jdbcTemplate.batchUpdate("insert into springbd.admin (nombre, cargo, fechaCreacion) values (:nombre, :cargo, :fechaCreacion)", batchArgs);
-    }
-
+    
 }

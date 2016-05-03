@@ -23,11 +23,11 @@ public class AdminService {
     @Autowired
     private AdminDao adminDao;
 
-    public boolean save(Admin admin) {
+    public void save(Admin admin) {
 
         admin.setFechaCreacion(new Timestamp(new Date().getTime()));
 
-        return adminDao.save(admin);
+        adminDao.save(admin);
     }
 
     public List<Admin> findAll() {
@@ -38,21 +38,22 @@ public class AdminService {
         return adminDao.findById(id);
     }
 
-    public boolean saveOrUpdate(Admin admin) {
+    public void saveOrUpdate(Admin admin) {
 
         if (admin.getIdAd() == 0) {
             //Insert
             admin.setFechaCreacion(new Timestamp(new Date().getTime()));
-            return adminDao.save(admin);
+            adminDao.save(admin);
         } else {
             //Update
-            return adminDao.update(admin);
+            adminDao.update(admin);
         }
 
     }
 
-    public boolean delete(int idAd) {
-       return adminDao.delete(idAd);
+    public void delete(int idAd) {
+        Admin admin = adminDao.findById(idAd);
+        adminDao.delete(admin);
     }
 
 }

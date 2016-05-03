@@ -10,7 +10,8 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <c:import url="/WEB-INF/views/menu.jsp"></c:import>
+        <h1>INDEX</h1>
         <h3><a href="<c:url value="/about"></c:url>">About</a></h3>
         <h3><a href="<c:url value="/admin"></c:url>">Gestión de Administradores</a></h3>
         

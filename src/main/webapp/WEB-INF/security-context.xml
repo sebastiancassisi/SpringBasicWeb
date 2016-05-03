@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
+
+
+    <security:http use-expressions="true">
+        <!-- Todos tienen acceso al index-->
+        <security:intercept-url pattern="/" access="permitAll" />
+            
+        <!-- Todos tienen acceso al login-->
+        <security:intercept-url pattern="/login" access="permitAll" />
+            
+        <!-- Para entrar al about tiene que estar logueado con cualquier tipo de cuenta-->
+        <security:intercept-url pattern="/about" access="isAuthenticated()" />
+        
+         <!-- Para entrar al usuario tiene que estar logueado con cualquier tipo de cuenta-->
+        <security:intercept-url pattern="/usuario/**" access="isAuthenticated()" />
+            
+        <!-- Para entrar al admin tiene que estar logueado con cualquier tipo de cuenta-->
+        <security:intercept-url pattern="/admin" access="isAuthenticated()" />
+            
+        <!-- Para poder realizar las operaciones del admin tiene que estar logueado con un a cuenta que comparta los siguientes roles-->
+        <security:intercept-url pattern="/admin/**" access="hasAnyRole({'ROLE_ROOT','ROLE_ADMIN'})" />
+            
+        <!-- Para poder realizar las operaciones de direccion tiene que estar logueado con un a cuenta que tenga como minimo ROLE_ADMIN-->
+        <security:intercept-url pattern="/direccion/**" access="hasRole('ROLE_ADMIN')" />
+            
+        <!-- Denegado cualquier acceso a /** sin logueo-->
+        <security:intercept-url pattern="/**" access="denyAll" />
+                
+        <!-- Login personalizado-->
+        <security:form-login login-page="/login"
+                                     password-parameter="clave" username-parameter="usuario"
+                                     authentication-failure-url="/login?error=true" /> 
+        <!-- Cerrar sesión-->         
+        <security:logout invalidate-session="true" logout-url="/logout" />
+        
+        <!-- Determinar el tiempo que mantiene activa la sesion--> 
+        <security:remember-me token-validity-seconds="1000"
+			user-service-ref="customUserDetailsService" />
+        
+    </security:http>
+
+
+    <!-- Realiza el login desde la base, se conecta por medio de customAuthenticationProvider--> 
+    <security:authentication-manager>
+		<security:authentication-provider ref="customAuthenticationProvider" />
+	</security:authentication-manager>
+        
+    <bean id="customAuthenticationProvider" class="ar.com.springbasicweb.config.CustomAuthenticationProvider" />
+    <bean id="customUserDetailsService" class="ar.com.springbasicweb.config.CustomUserDetailsService"/>
+	
+    <bean id="passwordEncoder"
+		class="org.springframework.security.crypto.password.StandardPasswordEncoder">
+	</bean>
+    
+</beans>

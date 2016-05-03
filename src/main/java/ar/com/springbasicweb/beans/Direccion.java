@@ -1,35 +1,29 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ar.com.springbasicweb.beans;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-/**
- *
- * @author cassisi
- */
-@Component
+@Entity
+@Table(name = "direccion")
 public class Direccion {
-    
+
+    @Id
+    @GeneratedValue
+    private int idDir;
+
     private String calle;
     private String cp;
 
-    @Autowired
-    public void setCalle(@Value("Suipacha 1250")String calle) {
-        this.calle = calle;
-    }
-    
-    @Autowired
-    public void setCp(@Value("1722")String cp) {
-        this.cp = cp;
-    }
-   
-    public Direccion() {
+    @ManyToOne
+    @JoinColumn(name = "idAd")
+    private Admin admin;
+
+    public int getIdDir() {
+        return idDir;
     }
 
     public Direccion(String calle, String cp) {
@@ -37,12 +31,40 @@ public class Direccion {
         this.cp = cp;
     }
 
+    public void setIdDir(int idDir) {
+        this.idDir = idDir;
+    }
+
+    public String getCalle() {
+        return calle;
+    }
+
+    public void setCalle(String calle) {
+        this.calle = calle;
+    }
+
+    public String getCp() {
+        return cp;
+    }
+
+    public void setCp(String cp) {
+        this.cp = cp;
+    }
+
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+
+    public Direccion() {
+    }
+
     @Override
     public String toString() {
-        return "Direccion{" + "calle=" + calle + ", cp=" + cp + '}';
+        return "Direccion{" + "idDir=" + idDir + ", calle=" + calle + ", cp=" + cp + '}';
     }
-    
-    
-    
-    
+
 }

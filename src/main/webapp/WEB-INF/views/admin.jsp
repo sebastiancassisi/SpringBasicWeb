@@ -17,6 +17,7 @@
 </script>
         </head>
         <body>
+            <c:import url="/WEB-INF/views/menu.jsp"></c:import>
             <h1>Admin.jsp</h1>
 
         <sf:form action="${pageContext.request.contextPath}/admin/save" method="post" commandName="admin">
@@ -46,6 +47,7 @@
 
         <c:forEach items="${admins}" var="admin">
             <c:out value="${admin}"></c:out>
+            <a href='<c:url value="/direccion/${admin.idAd}"></c:url>'>Direcciones</a>
             <a href='<c:url value="/admin/${admin.idAd}/update"></c:url>'>Actualizar</a>
             <a class="confirm" href='<c:url value="/admin/${admin.idAd}/delete"></c:url>'>Eliminar</a>
                 <br/><br/>
